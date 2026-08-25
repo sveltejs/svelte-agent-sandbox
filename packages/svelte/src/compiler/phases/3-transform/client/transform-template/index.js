@@ -3,7 +3,7 @@
 /** @import { ComponentClientTransformState } from '../types.js' */
 /** @import { Node } from './types.js' */
 import { TEMPLATE_USE_MATHML, TEMPLATE_USE_SVG } from '../../../../../constants.js';
-import { dev, locator } from '../../../../state.js';
+import { dev, dev_locator } from '../../../../state.js';
 import * as b from '../../../../utils/builders.js';
 
 /**
@@ -15,7 +15,7 @@ function build_locations(nodes) {
 	for (const node of nodes) {
 		if (node.type !== 'element') continue;
 
-		const { line, column } = locator(node.start);
+		const { line, column } = dev_locator(node.start);
 
 		const expression = b.array([b.literal(line), b.literal(column)]);
 		const children = build_locations(node.children);

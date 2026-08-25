@@ -7,7 +7,7 @@ import * as b from '#compiler/builders';
 import { sanitize_template_string } from '../../../../../utils/sanitize_template_string.js';
 import { regex_is_valid_identifier } from '../../../../patterns.js';
 import is_reference from 'is-reference';
-import { dev, is_ignored, locator, component_name } from '../../../../../state.js';
+import { dev, is_ignored, dev_locator, component_name } from '../../../../../state.js';
 import { async_thunk, build_getter, is_state_source } from '../../utils.js';
 import { ExpressionMetadata } from '../../../../nodes.js';
 
@@ -354,7 +354,7 @@ export function validate_binding(state, binding, expression) {
 	const left_binding = left && state.scope.get(left.name);
 	if (left_binding?.kind === 'store_sub') return;
 
-	const loc = locator(binding.start);
+	const loc = dev_locator(binding.start);
 
 	const obj = /** @type {Expression} */ (expression.object);
 
@@ -429,7 +429,7 @@ export function validate_mutation(node, context, expression) {
 
 	path.unshift(b.literal(name.name));
 
-	const loc = locator(/** @type {number} */ (left.start));
+	const loc = dev_locator(/** @type {number} */ (left.start));
 
 	return b.call(
 		'$$ownership_validator.mutation',
@@ -502,7 +502,7 @@ export function add_svelte_meta(expression, node, type, additional) {
 		return b.stmt(expression);
 	}
 
-	const location = node.start !== undefined && locator(node.start);
+	const location = node.start !== undefined && dev_locator(node.start);
 	if (!location) {
 		return b.stmt(expression);
 	}

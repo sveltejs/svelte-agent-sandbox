@@ -2,6 +2,7 @@
 /** @import { CompileOptions } from './types' */
 /** @import { AST, Warning } from '#compiler' */
 import { getLocator } from 'locate-character';
+import { decode } from '@jridgewell/sourcemap-codec';
 import { sanitize_location } from '../utils.js';
 
 /** @typedef {{ start?: number, end?: number }} NodeLike */
@@ -49,6 +50,9 @@ export let runes = false;
 /** @type {(index: number) => Location} */
 export let locator;
 
+/** @type {(index: number) => Location} */
+export let dev_locator;
+
 /** @param {string} value */
 export function set_source(value) {
 	source = value;
@@ -62,6 +66,49 @@ export function set_source(value) {
 
 		return loc;
 	};
+
+	dev_locator = locator;
+}
+
+/**
+ * Use a preprocessor sourcemap to map locations embedded in dev output back to the original source.
+ * @param {CompileOptions['sourcemap']} sourcemap
+ */
+export function set_dev_sourcemap(sourcemap) {
+	if (!sourcemap) return;
+
+	try {
+		const map = typeof sourcemap === 'string' ? JSON.parse(sourcemap) : sourcemap;
+		const mappings = typeof map.mappings === 'string' ? decode(map.mappings) : map.mappings;
+
+		if (!Array.isArray(mappings)) return;
+
+		dev_locator = (i) => {
+			const location = locator(i);
+			const segments = mappings[location.line - 1];
+
+			if (!segments?.length) return location;
+
+			let low = 0;
+			let high = segments.length - 1;
+
+			while (low <= high) {
+				const index = (low + high) >> 1;
+				if (segments[index][0] <= location.column) {
+					low = index + 1;
+				} else {
+					high = index - 1;
+				}
+			}
+
+			const match = segments[high];
+			return match?.length >= 4
+				? { line: match[2] + 1, column: match[3], character: location.character }
+				: location;
+		};
+	} catch {
+		// Invalid sourcemaps are handled when they are merged with the generated sourcemap
+	}
 }
 
 /**

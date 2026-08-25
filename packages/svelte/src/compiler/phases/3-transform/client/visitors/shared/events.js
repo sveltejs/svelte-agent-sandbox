@@ -2,7 +2,7 @@
 /** @import { AST } from '#compiler' */
 /** @import { ComponentContext } from '../../types' */
 import { is_capture_event, is_passive_event } from '../../../../../../utils.js';
-import { dev, locator } from '../../../../../state.js';
+import { dev, dev_locator } from '../../../../../state.js';
 import * as b from '#compiler/builders';
 import { ExpressionMetadata } from '../../../../nodes.js';
 
@@ -137,7 +137,7 @@ export function build_event_handler(node, metadata, context) {
 	let call = b.call(b.member(handler, 'apply', false, true), b.this, b.id('$$args'));
 
 	if (dev) {
-		const loc = locator(/** @type {number} */ (node.start));
+		const loc = dev_locator(/** @type {number} */ (node.start));
 
 		const remove_parens =
 			node.type === 'CallExpression' &&

@@ -1,7 +1,7 @@
 /** @import { BlockStatement, Expression, ExpressionStatement, Statement } from 'estree' */
 /** @import { AST } from '#compiler' */
 /** @import { ComponentContext } from '../types' */
-import { dev, locator } from '../../../../state.js';
+import { dev, dev_locator } from '../../../../state.js';
 import { is_text_attribute } from '../../../../utils/ast.js';
 import * as b from '#compiler/builders';
 import { async_thunk } from '../utils.js';
@@ -125,7 +125,7 @@ export function SvelteElement(node, context) {
 		}
 	}
 
-	const location = dev && locator(node.start);
+	const location = dev && dev_locator(node.start);
 
 	statements.push(
 		b.stmt(

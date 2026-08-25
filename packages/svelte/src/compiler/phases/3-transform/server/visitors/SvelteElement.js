@@ -1,7 +1,7 @@
 /** @import { BlockStatement, Expression, Statement } from 'estree' */
 /** @import { AST } from '#compiler' */
 /** @import { ComponentContext } from '../types.js' */
-import { dev, locator } from '../../../../state.js';
+import { dev, dev_locator } from '../../../../state.js';
 import * as b from '#compiler/builders';
 import { determine_namespace_for_children } from '../../utils.js';
 import { build_element_attributes } from './shared/element.js';
@@ -44,7 +44,7 @@ export function SvelteElement(node, context) {
 	build_element_attributes(node, { ...context, state }, optimiser.transform);
 
 	if (dev) {
-		const location = locator(node.start);
+		const location = dev_locator(node.start);
 		statements.push(
 			b.stmt(
 				b.call(

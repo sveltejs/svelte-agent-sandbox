@@ -39,6 +39,10 @@ export function compile(source, options) {
 		runes: 'runes' in parsed_options ? () => parsed_options.runes : validated.runes
 	};
 
+	if (combined_options.dev) {
+		state.set_dev_sourcemap(combined_options.sourcemap);
+	}
+
 	if (parsed.metadata.ts) {
 		parsed = {
 			...parsed,

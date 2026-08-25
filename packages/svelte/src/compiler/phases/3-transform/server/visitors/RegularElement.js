@@ -3,7 +3,7 @@
 /** @import { ComponentContext, ComponentServerTransformState } from '../types.js' */
 /** @import { Scope } from '../../../scope.js' */
 import { is_void } from '../../../../../utils.js';
-import { dev, locator } from '../../../../state.js';
+import { dev, dev_locator } from '../../../../state.js';
 import * as b from '#compiler/builders';
 import { clean_nodes, determine_namespace_for_children } from '../../utils.js';
 import { build_element_attributes, prepare_element_spread_object } from './shared/element.js';
@@ -92,7 +92,7 @@ export function RegularElement(node, context) {
 	}
 
 	if (dev) {
-		const location = locator(node.start);
+		const location = dev_locator(node.start);
 		state.template.push(
 			b.stmt(
 				b.call(
@@ -144,7 +144,7 @@ export function RegularElement(node, context) {
 			const body_statements = [...state.init, ...build_template(inner_state.template)];
 
 			if (dev) {
-				const location = locator(node.start);
+				const location = dev_locator(node.start);
 				body_statements.unshift(
 					b.stmt(
 						b.call(
